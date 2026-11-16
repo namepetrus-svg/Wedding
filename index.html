@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>창현 ♥ 지현 결혼합니다</title>
+  <meta name="description" content="2027년 12월 4일, 창현과 지현이 결혼합니다.">
+  <style>
+    :root {
+      --bg: #fffaf7;
+      --text: #3b3330;
+      --muted: #8a7d77;
+      --accent: #c9847a;
+      --line: #eadfd9;
+      --footer-bg: #f6ece7;
+      --radius-s: 8px;
+      --radius-m: 12px;
+      --section-y: 56px;
+      --section-x: 24px;
+      --header-h: 64px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; scroll-padding-top: var(--header-h); }
+    body {
+      font-family: "Noto Serif KR", "Nanum Myeongjo", serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.8;
+      max-width: 480px;
+      margin: 0 auto;
+      box-shadow: 0 0 40px rgba(0, 0, 0, .06);
+    }
+    img { display: block; width: 100%; height: auto; }
+    a { color: var(--accent); text-decoration: none; }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+    /* header / nav */
+    header {
+      position: sticky; top: 0; z-index: 10;
+      background: rgba(255, 250, 247, .92);
+      -webkit-backdrop-filter: blur(6px);
+      backdrop-filter: blur(6px);
+      border-bottom: 1px solid var(--line);
+    }
+    .header-top {
+      display: flex; justify-content: space-between; align-items: baseline;
+      padding: 8px 16px 0;
+    }
+    .logo { font-weight: 700; }
+    .header-date { font-size: .8rem; color: var(--muted); letter-spacing: .12em; }
+    nav ul {
+      list-style: none; display: flex; gap: 4px;
+      overflow-x: auto; white-space: nowrap; padding: 0 8px;
+      scrollbar-width: none;
+    }
+    nav ul::-webkit-scrollbar { display: none; }
+    nav a {
+      display: flex; align-items: center; min-height: 44px; padding: 0 8px;
+      font-size: .85rem; color: var(--text);
+    }
+    nav a:hover { color: var(--accent); }
+
+    /* hero */
+    .hero {
+      color: #fff; text-align: center;
+      min-height: 80vh; display: flex; flex-direction: column;
+      justify-content: flex-end; align-items: center; padding: 40px 20px 20px;
+      background:
+        linear-gradient(transparent 40%, rgba(0, 0, 0, .55)),
+        url("image/05-hero.png") center / cover no-repeat;
+    }
+    h1 { font-size: 1.7rem; line-height: 1.4; font-weight: 700; margin-bottom: 12px; }
+    .hero p { font-size: .95rem; }
+
+    /* sections */
+    section {
+      padding: var(--section-y) var(--section-x);
+      text-align: center; border-bottom: 1px solid var(--line);
+    }
+    h2 { font-size: 1.3rem; font-weight: 700; color: var(--accent); margin-bottom: 24px; }
+    h2::after {
+      content: ""; display: block; width: 28px; height: 2px;
+      background: var(--accent); margin: 12px auto 0;
+    }
+    h3 { font-size: 1.05rem; font-weight: 700; }
+    section p { margin-bottom: 14px; }
+    .muted { color: var(--muted); font-size: .9rem; }
+    .photo { border-radius: var(--radius-m); margin-bottom: 20px; }
+
+    /* button */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-height: 44px; padding: 0 20px; margin: 4px;
+      border: 1px solid var(--accent); border-radius: 24px;
+      color: var(--accent); background: transparent;
+      font: inherit; font-size: .9rem; cursor: pointer;
+    }
+    .btn:hover { background: var(--accent); color: #fff; }
+
+    /* couple */
+    .people { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .person img {
+      border-radius: var(--radius-m); margin-bottom: 12px;
+      aspect-ratio: 3 / 4; object-fit: cover;
+    }
+    .person .muted { margin-bottom: 8px; }
+    .person .btn { padding: 0 14px; margin: 2px; }
+
+    /* gallery */
+    .gallery { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .gallery button { all: unset; display: block; cursor: zoom-in; border-radius: var(--radius-s); overflow: hidden; }
+    .gallery button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .gallery li { list-style: none; }
+    .gallery li:first-child { grid-column: 1 / -1; }
+    .gallery img { border-radius: var(--radius-s); }
+    .lightbox {
+      position: fixed; inset: 0; z-index: 100; display: none;
+      background: rgba(0, 0, 0, .88); align-items: center; justify-content: center; padding: 20px;
+    }
+    .lightbox.open { display: flex; }
+    .lightbox img { max-width: 100%; max-height: 100%; width: auto; object-fit: contain; border-radius: var(--radius-s); }
+    .lightbox .close {
+      position: absolute; top: 12px; right: 12px; min-width: 44px; min-height: 44px;
+      border: 0; background: transparent; color: #fff; font-size: 2rem; cursor: pointer;
+    }
+
+    /* info */
+    dl { display: grid; grid-template-columns: 80px 1fr; gap: 8px 12px; text-align: left; margin-bottom: 20px; }
+    dt { color: var(--muted); }
+
+    /* location */
+    .map { display: block; width: 100%; height: 280px; border: 0; border-radius: var(--radius-m); margin: 8px 0 12px; }
+    .transport { text-align: left; margin-top: 24px; font-size: .92rem; }
+    .transport h3 { margin-top: 12px; }
+    .transport p { margin-bottom: 0; }
+
+    /* account */
+    details { border: 1px solid var(--line); border-radius: 10px; margin-bottom: 12px; text-align: left; }
+    summary { padding: 12px 16px; min-height: 44px; cursor: pointer; font-weight: 700; }
+    .acct {
+      display: flex; justify-content: space-between; align-items: center; gap: 8px;
+      padding: 8px 16px; border-top: 1px solid var(--line); font-size: .9rem;
+    }
+    .acct .btn { padding: 0 12px; font-size: .8rem; margin: 0; flex-shrink: 0; }
+
+    /* footer */
+    footer { padding: 40px var(--section-x); text-align: center; background: var(--footer-bg); }
+    footer p { margin-bottom: 8px; }
+    .copy { color: var(--muted); font-size: .75rem; }
+
+    /* scroll fade-in */
+    .reveal { opacity: 0; transform: translateY(16px); transition: opacity .6s ease, transform .6s ease; }
+    .reveal.visible { opacity: 1; transform: none; }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .reveal { opacity: 1; transform: none; transition: none; }
+    }
+  </style>
+</head>
+<body id="top">
+
+  <header>
+    <div class="header-top">
+      <span class="logo">창현 ♥ 지현</span>
+      <span class="header-date">2027.12.04 SAT</span>
+    </div>
+    <nav aria-label="섹션 이동">
+      <ul>
+        <li><a href="#greeting">인사말</a></li>
+        <li><a href="#couple">신랑·신부</a></li>
+        <li><a href="#gallery">갤러리</a></li>
+        <li><a href="#info">예식 안내</a></li>
+        <li><a href="#location">오시는 길</a></li>
+        <li><a href="#account">마음 전하실 곳</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <div class="hero">
+      <h1>창현 ♥ 지현,<br>저희 결혼합니다</h1>
+      <p>2027년 12월 4일 토요일 오후 4시 · M스타하우스 5층 화이트스타홀</p>
+    </div>
+
+    <section id="greeting" class="reveal">
+      <h2>초대합니다</h2>
+      <img class="photo" src="image/04-couple-close.png" alt="서로를 바라보는 신랑과 신부의 클로즈업 사진" loading="lazy">
+      <p>서로 다른 길을 걸어온 두 사람이<br>이제 같은 길을 함께 걸으려 합니다.<br>
+         귀한 걸음으로 저희의 첫걸음을<br>축복해 주시면 감사하겠습니다.</p>
+      <p class="muted">OOO · OOO의 아들 창현<br>OOO · OOO의 딸 지현</p>
+    </section>
+
+    <section id="couple" class="reveal">
+      <h2>신랑 · 신부</h2>
+      <div class="people">
+        <article class="person">
+          <img src="image/01-groom.png" alt="신랑 창현" loading="lazy">
+          <h3>신랑 이창현</h3>
+          <p class="muted">"평생 웃게 해줄게요."</p>
+          <a class="btn" href="tel:010-3132-6683">전화</a>
+          <a class="btn" href="sms:010-3132-6683">문자</a>
+        </article>
+        <article class="person">
+          <img src="image/02-bride.png" alt="신부 지현" loading="lazy">
+          <h3>신부 이지현</h3>
+          <p class="muted">"늘 곁에서 함께할게요."</p>
+          <a class="btn" href="tel:010-4997-2770">전화</a>
+          <a class="btn" href="sms:010-4997-2770">문자</a>
+        </article>
+      </div>
+    </section>
+
+    <section id="gallery" class="reveal">
+      <h2>갤러리</h2>
+      <ul class="gallery">
+        <li><button type="button" aria-label="사진 크게 보기"><img src="image/03-couple-full.png" alt="신랑과 신부의 전신 사진" loading="lazy"></button></li>
+        <li><button type="button" aria-label="사진 크게 보기"><img src="image/04-couple-close.png" alt="신랑과 신부의 클로즈업 사진" loading="lazy"></button></li>
+        <li><button type="button" aria-label="사진 크게 보기"><img src="image/06-walking.png" alt="함께 걷는 신랑과 신부" loading="lazy"></button></li>
+      </ul>
+    </section>
+
+    <section id="info" class="reveal">
+      <h2>예식 안내</h2>
+      <img class="photo" src="image/07-rings.png" alt="결혼반지" loading="lazy">
+      <dl>
+        <dt>일시</dt><dd>2027년 12월 4일 (토) 오후 4시</dd>
+        <dt>장소</dt><dd>M스타하우스 5층 화이트스타홀</dd>
+        <dt>식사</dt><dd>예식 후 1층 연회장</dd>
+        <dt>D-day</dt><dd id="dday">-</dd>
+      </dl>
+      <a class="btn" href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=%EC%B0%BD%ED%98%84%20%E2%99%A5%20%EC%A7%80%ED%98%84%20%EA%B2%B0%ED%98%BC%EC%8B%9D&amp;dates=20271204T070000Z/20271204T080000Z&amp;location=M%EC%8A%A4%ED%83%80%ED%95%98%EC%9A%B0%EC%8A%A4" target="_blank" rel="noopener">캘린더에 저장</a>
+    </section>
+
+    <section id="location" class="reveal">
+      <h2>오시는 길</h2>
+      <p>대구광역시 동구 동촌로 316<br>M스타하우스 5층 화이트스타홀</p>
+      <iframe class="map" title="M스타하우스 위치 지도" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+        src="https://maps.google.com/maps?q=%EB%8C%80%EA%B5%AC%EA%B4%91%EC%97%AD%EC%8B%9C%20%EB%8F%99%EA%B5%AC%20%EB%8F%99%EC%B4%8C%EB%A1%9C%20316&amp;z=16&amp;output=embed"></iframe>
+      <div>
+        <a class="btn" href="https://map.naver.com/p/entry/place/19550872" target="_blank" rel="noopener">네이버지도</a>
+        <a class="btn" href="https://map.kakao.com/?q=M%EC%8A%A4%ED%83%80%ED%95%98%EC%9A%B0%EC%8A%A4" target="_blank" rel="noopener">카카오맵</a>
+        <a class="btn" href="https://www.tmap.co.kr/" target="_blank" rel="noopener">티맵</a>
+      </div>
+      <div class="transport">
+        <h3>지하철</h3><p>1호선 방촌역 3번 출구 도보 5분</p>
+        <h3>버스</h3><p>OO정류장 하차</p>
+        <h3>자가용 · 주차</h3><p>웨딩홀 지하 주차장 이용 (주차 시간 안내)</p>
+      </div>
+    </section>
+
+    <section id="account" class="reveal">
+      <h2>마음 전하실 곳</h2>
+      <p class="muted">참석이 어려우신 분들을 위해<br>계좌번호를 안내드립니다.</p>
+      <details>
+        <summary>신랑측 계좌번호</summary>
+        <div class="acct"><span>국민 91994668359 이창현</span><button type="button" class="btn" data-copy="91994668359">복사</button></div>
+      </details>
+      <details>
+        <summary>신부측 계좌번호</summary>
+        <div class="acct"><span>iM뱅크 50183637515 이지현</span><button type="button" class="btn" data-copy="50183637515">복사</button></div>
+      </details>
+    </section>
+  </main>
+
+  <footer>
+    <p>함께해 주셔서 감사합니다.</p>
+    <p>창현 ♥ 지현 · 2027.12.04</p>
+    <p>
+      <button type="button" class="btn" id="share">링크 공유하기</button>
+      <a class="btn" href="#top">맨 위로</a>
+    </p>
+    <p class="copy">© 2027 창현 &amp; 지현</p>
+  </footer>
+
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="사진 확대">
+    <button type="button" class="close" aria-label="닫기">×</button>
+    <img src="" alt="">
+  </div>
+
+  <script>
+    // D-day
+    (function () {
+      var target = new Date("2027-12-04T16:00:00+09:00");
+      var days = Math.ceil((target - new Date()) / 86400000);
+      document.getElementById("dday").textContent =
+        days > 0 ? "D-" + days : days === 0 ? "D-Day" : "D+" + (-days);
+    })();
+
+    // 계좌 복사
+    document.querySelectorAll("[data-copy]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var done = function (msg) {
+          btn.textContent = msg;
+          setTimeout(function () { btn.textContent = "복사"; }, 1500);
+        };
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(btn.dataset.copy).then(
+            function () { done("복사됨"); },
+            function () { done("실패"); }
+          );
+        } else { done("실패"); }
+      });
+    });
+
+    // 링크 공유 (Web Share API, 미지원 시 링크 복사)
+    document.getElementById("share").addEventListener("click", function () {
+      var data = { title: document.title, url: location.href };
+      if (navigator.share) {
+        navigator.share(data).catch(function () {});
+      } else if (navigator.clipboard) {
+        navigator.clipboard.writeText(location.href).then(function () { alert("링크가 복사되었습니다."); });
+      }
+    });
+
+    // 갤러리 라이트박스
+    (function () {
+      var box = document.getElementById("lightbox");
+      var big = box.querySelector("img");
+      var lastFocus = null;
+      var close = function () {
+        box.classList.remove("open");
+        if (lastFocus) lastFocus.focus();
+      };
+      document.querySelectorAll(".gallery button").forEach(function (b) {
+        b.addEventListener("click", function () {
+          var img = b.querySelector("img");
+          lastFocus = b;
+          big.src = img.src;
+          big.alt = img.alt;
+          box.classList.add("open");
+          box.querySelector(".close").focus();
+        });
+      });
+      box.addEventListener("click", close);
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape" && box.classList.contains("open")) close();
+      });
+    })();
+
+    // 스크롤 페이드인
+    (function () {
+      var items = document.querySelectorAll(".reveal");
+      if (!("IntersectionObserver" in window)) {
+        items.forEach(function (el) { el.classList.add("visible"); });
+        return;
+      }
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (en.isIntersecting) { en.target.classList.add("visible"); io.unobserve(en.target); }
+        });
+      }, { threshold: 0.1 });
+      items.forEach(function (el) { io.observe(el); });
+    })();
+  </script>
+</body>
+</html>
